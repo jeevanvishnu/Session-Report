@@ -13,81 +13,127 @@
             <h1>Session Report Generator</h1>
             <p>Efficiently document and generate session reports</p>
         </header>
-        
-        <div class="form-container">
+
+        <!-- Toggle button -->
+        <button id="toggle-btn" onclick="toggleSection()">Switch to Session Report</button>
+
+        <!-- Audio Task -->
+        <div class="form-container" id="audio-task">
             <div class="form-group">
-                <label for="batch">Batch Name</label>
-                <input type="text" id="batch" placeholder="Enter batch name">
+                <label for="audio-batch">Batch Name</label>
+                <input type="text" id="audio-batch" placeholder="Enter batch name">
             </div>
 
             <div class="form-group">
-                <label for="date">Date</label>
-                <input type="date" id="date">
+                <label for="audio-date">Date</label>
+                <input type="date" id="audio-date">
             </div>
 
             <div class="form-group">
-                <label for="trainer">Trainer Name</label>
-                <input type="text" id="trainer" placeholder="Enter trainer name">
+                <label for="audio-trainer">Trainer Name</label>
+                <input type="text" id="audio-trainer" placeholder="Enter trainer name">
             </div>
 
             <div class="form-group">
-                <label for="coordinator">Co-Ordinator Name</label>
-                <input type="text" id="coordinator" placeholder="Comma-separated names">
+                <label for="audio-coordinator">Co-Ordinator Name</label>
+                <input type="text" id="audio-coordinator" placeholder="Comma-separated names">
+            </div>
+       
+            <div class="form-group">
+                <label for="audio-topic">Topic</label>
+                <input type="text" id="audio-topic" placeholder="Enter session topic">
             </div>
 
             <div class="form-group">
-                <label for="session">Session Link</label>
-                <input type="text" id="session" placeholder="Enter session link">
+                <label for="audio-participant">Participant Names</label>
+                <input type="text" id="audio-participant" placeholder="Comma-separated names">
             </div>
 
             <div class="form-group">
-                <label for="tldv">TLdv Link</label>
-                <input type="text" id="tldv" placeholder="Enter TLdv link">
-            </div>
-
-
-            <div class="form-group">
-                <label for="topic">Topic Name</label>
-                <input type="text" id="topicname" placeholder="Enter session topic">
+                <label for="audio-absentees">Absentees Names</label>
+                <input type="text" id="audio-absentees" placeholder="Comma-separated names">
             </div>
 
             <div class="form-group">
-                <label for="topic">Topic</label>
-                <input type="text" id="topic" placeholder="Enter session topic">
-            </div>
-
-            <div class="form-group">
-                <label for="participant">Participant Names</label>
-                <input type="text" id="participant" placeholder="Comma-separated names">
-            </div>
-
-            <div class="form-group">
-                <label for="absentees">Absentees Names</label>
-                <input type="text" id="absentees" placeholder="Comma-separated names">
-            </div>
-
-            <div class="form-group">
-                <label for="report">Reported By</label>
-                <input type="text" id="report" placeholder="Enter reporter name">
+                <label for="audio-report">Reported By</label>
+                <input type="text" id="audio-report" placeholder="Enter reporter name">
             </div>
         </div>
 
-        
+        <!-- Session Report -->
+        <div class="form-container" id="session-report">
+            
+            <div class="form-group">
+                <label for="session-batch">Batch Name</label>
+                <input type="text" id="session-batch" placeholder="Enter batch name">
+            </div>
+
+            <div class="form-group">
+                <label for="session-date">Date</label>
+                <input type="date" id="session-date">
+            </div>
+
+            <div class="form-group">
+                <label for="session-trainer">Trainer Name</label>
+                <input type="text" id="session-trainer" placeholder="Enter trainer name">
+            </div>
+
+            <div class="form-group">
+                <label for="session-coordinator">Co-Ordinator Name</label>
+                <input type="text" id="session-coordinator" placeholder="Comma-separated names">
+            </div>
+
+            <div class="form-group">
+                <label for="session-link">Session Link</label>
+                <input type="text" id="session-link" placeholder="Enter session link">
+            </div>
+
+            <div class="form-group">
+                <label for="session-tldv">TLdv Link</label>
+                <input type="text" id="session-tldv" placeholder="Enter TLdv link">
+            </div>
+
+            <div class="form-group">
+                <label for="session-topicname">Topic Name</label>
+                <input type="text" id="session-topicname" placeholder="Enter session topic name">
+            </div>
+
+            <div class="form-group">
+                <label for="session-topic">Topic</label>
+                <input type="text" id="session-topic" placeholder="Enter session topic">
+            </div>
+
+            <div class="form-group">
+                <label for="session-participant">Participant Names</label>
+                <input type="text" id="session-participant" placeholder="Comma-separated names">
+            </div>
+
+            <div class="form-group">
+                <label for="session-absentees">Absentees Names</label>
+                <input type="text" id="session-absentees" placeholder="Comma-separated names">
+            </div>
+
+            <div class="form-group">
+                <label for="session-report-by">Reported By</label>
+                <input type="text" id="session-report-by" placeholder="Enter reporter name">
+            </div>
+        </div>
+
+        <!-- Single Output Section -->
         <div class="output-section">
             <div class="buttons">
                 <button id="generate-btn" onclick="generateReport()">Generate Report</button>
-                <button id="copy-btn" onclick="copyToClipboard()">
-                    📋 Copy
-                </button>
+                <button id="copy-btn" onclick="copyToClipboard()">📋 Copy</button>
+                <button id="share-btn" onclick="shareReport()">📤 Share</button>
             </div>
             
             <textarea id="generate" rows="10" readonly></textarea>
         </div>
-
       
-    <footer>
-        <p>&copy; Created by Jeevan Vishnu</p>
-    </footer>
+        <footer>
+            <p>&copy; Created by Jeevan Vishnu</p>
+        </footer>
+    </div>
     
     <script src="script.js"></script>
 </body>
