@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session Report Generator</title>
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -71,13 +72,19 @@
             </div>
         </div>
 
-        <div class="buttons">
-            <button onclick="generateReport()">Generate Report</button>
+        
+        <div class="output-section">
+            <div class="buttons">
+                <button id="generate-btn" onclick="generateReport()">Generate Report</button>
+                <button id="copy-btn" onclick="copyToClipboard()">
+                    📋 Copy
+                </button>
+            </div>
+            
+            <textarea id="generate" rows="10" readonly></textarea>
         </div>
 
-        <textarea id="generate" rows="10" readonly></textarea>
-    </div>
-    
+      
     <footer>
         <p>&copy; Created by Jeevan Vishnu</p>
     </footer>

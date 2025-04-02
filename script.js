@@ -44,6 +44,31 @@ ${absinties.map((a, i) => `${i + 1}. ${a}`).join("\n")}
 ✍ Reported by: ${report}`;
 
  document.getElementById('generate').value = Report;
- }
+        }
 
-
+        function copyToClipboard() {
+           
+            const reportText = document.getElementById('generate');
+            
+           
+            reportText.select();
+            reportText.setSelectionRange(0, 99999); 
+            
+            
+            navigator.clipboard.writeText(reportText.value)
+                .then(() => {
+                   
+                    const copyBtn = document.getElementById('copy-btn');
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '✓ Copied!';
+                    
+                   
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalText;
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert('Failed to copy text. Please try again.');
+                });
+        }
