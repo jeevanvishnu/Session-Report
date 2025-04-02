@@ -16,11 +16,11 @@ This project allows users to share a session report using the Web Share API. If 
 
 1. Clone this repository:
    ```sh
-   git clone https://github.com/your-username/share-report.git
+    https://github.com/jeevanvishnu/Session-Report.git
    ```
-2. Navigate to the project folder:
+2. Hosting Link:
    ```sh
-   cd share-report
+     https://communicationsesionreport.netlify.app/
    ```
 3. Open `index.html` in a browser to test the functionality.
 
