@@ -59,8 +59,10 @@ function generateReport() {
         const participant = document.getElementById('audio-participant').value.split(',').map(p => p.trim());
         const absentees = document.getElementById('audio-absentees').value.split(',').map((c) => c.trim());
         const report = document.getElementById('audio-report').value;
+        const participantEmoji = document.getElementById('participant-emoji').value.trim() || '👤';
+        const absenteeEmoji = document.getElementById('absentees-emoji').value.trim() || '❌';
 
-        reportText = ` Communication Session Report
+        reportText = ` 
 
 Batch: ${batch}
 Date: ${date}
@@ -70,7 +72,7 @@ Date: ${date}
 🧑🏻‍💻 Coordinators:
 ${coordinator.map((c, i) => `${i + 1}. ${c}`).join("\n")}
 
----
+------------------
 
 📝 Report:
 🎤... Audio Task Report ...🎤
@@ -79,11 +81,13 @@ ${coordinator.map((c, i) => `${i + 1}. ${c}`).join("\n")}
 
 ------------------------
 
-📜 Participants (${participant.length})
-${participant.map((p, i) => `${i + 1}. ${p}`).join("\n")}
+📜 Participants (${participant.length}):\n
+${participant.map((p) => `${participantEmoji} ${p}`).join("\n\n")}\n
 ------------------------
-🚫 Absentees (${absentees.length}):
-${absentees.map((a, i) => `${i + 1}. ${a}`).join("\n")}
+
+🚫 Absentees (${absentees.length}):\n
+${absentees.map((a) => `${absenteeEmoji} ${a}`).join("\n\n")}
+
 
 ✍ Reported by: ${report}`;
 
@@ -138,7 +142,7 @@ TLdv link: ${tldv}
 
 ------------------------
 
-📜 Participants (${participant.length})
+📜 Participants (${'\n',participant.length})
 ${participant.map((p, i) => `${i + 1}. ${p}`).join("\n")}
 ------------------------
 🚫 Absentees (${absentees.length}):
