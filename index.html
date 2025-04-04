@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session Report Generator</title>
-    
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <div class="container">
@@ -14,137 +13,250 @@
             <p>Efficiently document and generate session reports</p>
         </header>
 
-        <!-- Toggle button -->
-        <button id="toggle-btn" onclick="toggleSection()">Switch to Session Report</button>
-
-        <!-- Audio Task -->
-        <div class="form-container" id="audio-task">
-            <div class="form-group">
-                <label for="audio-batch">Batch Name</label>
-                <input type="text" id="audio-batch" placeholder="Enter batch name">
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="audio-task">Audio Task</button>
+                <button class="tab-btn" data-tab="session-report">Session Report</button>
             </div>
-
-            <div class="form-group">
-                <label for="audio-date">Date</label>
-                <input type="date" id="audio-date">
-            </div>
-
-            <div class="form-group">
-                <label for="audio-trainer">Trainer Name</label>
-                <input type="text" id="audio-trainer" placeholder="Enter trainer name">
-            </div>
-
-            <div class="form-group">
-                <label for="audio-coordinator">Co-Ordinator Name</label>
-                <input type="text" id="audio-coordinator" placeholder="Comma-separated names">
-            </div>
-       
-            <div class="form-group">
-                <label for="audio-topic">Topic</label>
-                <input type="text" id="audio-topic" placeholder="Enter session topic">
-            </div>
-
-            <div class="form-group">
-                <label for="audio-participant">Participant Names</label>
-                <input type="text" id="audio-participant" placeholder="Comma-separated names">
-            </div>
-
-            <div class="form-group">
-                <label for="participant-emoji">Participant Emoji</label>
-                <input type="text" id="participant-emoji" placeholder="Set Participant Emoji(Optional)" maxlength="2">
-            </div>
-
-            <div class="form-group">
-                <label for="absentees-emoji">Absentee Emoji</label>
-                <input type="text" id="absentees-emoji" placeholder="Set Absentee Emoji(Optional)" maxlength="2">
-            </div>
-
-            <div class="form-group">
-                <label for="audio-absentees">Absentees Names</label>
-                <input type="text" id="audio-absentees" placeholder="Comma-separated names">
-            </div>
-
-            <div class="form-group">
-                <label for="audio-report">Reported By</label>
-                <input type="text" id="audio-report" placeholder="Enter reporter name">
-            </div>
-        </div>
-
-        <!-- Session Report -->
-        <div class="form-container" id="session-report">
             
-            <div class="form-group">
-                <label for="session-batch">Batch Name</label>
-                <input type="text" id="session-batch" placeholder="Enter batch name">
+            <!-- Audio Task Form -->
+            <div class="tab-content active" id="audio-task">
+                <h2>Audio Task Report</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="audio-batch">Batch Name</label>
+                        <input type="text" id="audio-batch" placeholder="Enter batch name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="audio-date">Date</label>
+                        <input type="date" id="audio-date">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="audio-trainer">Trainer Name</label>
+                        <input type="text" id="audio-trainer" placeholder="Enter trainer name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="audio-coordinator">Co-Ordinator Name</label>
+                        <input type="text" id="audio-coordinator" placeholder="Comma-separated names">
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="audio-topic">Topic</label>
+                    <input type="text" id="audio-topic" placeholder="Enter session topic">
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="audio-participant">Participant Names</label>
+                    <input type="text" id="audio-participant" placeholder="Comma-separated names">
+                    
+                    <div class="dropdown-container">
+                        <label for="audio-participant-dropdown">Add Participant</label>
+                        <select id="audio-participant-dropdown" onchange="addName('audio-participant-dropdown', 'audio-participant')">
+                            <option value="">-- Select Participant --</option>
+                            <option value="Collins Roy">Collins Roy</option>
+                            <option value="Samual Raju">Samual Raju</option>
+                            <option value="Hibah Mohammed K">Hibah Mohammed K</option>
+                            <option value="Muhammed Suhail TS">Muhammed Suhail TS</option>
+                            <option value="Sidharth J">Sidharth J</option>
+                            <option value="Emin Siyad Mothi">Emin Siyad Mothi</option>
+                            <option value="Ajnas Ahammed V S">Ajnas Ahammed V S</option>
+                            <option value="Sidharth RS">Sidharth RS</option>
+                            <option value="Aswanth K T">Aswanth K T</option>
+                            <option value="Jeevan Vishnu">Jeevan Vishnu</option>
+                            <option value="Mubeena Parvin">Mubeena Parvin</option>
+                            <option value="Fidha Fathima M">Fidha Fathima M</option>
+                            <option value="Alan Jude Thomas">Alan Jude Thomas</option>
+                            <option value="Jissmon P Joseph">Jissmon P Joseph</option>
+                            <option value="Shafeeh">Shafeeh</option>
+                            <option value="Aswin MS">Aswin MS</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="participant-emoji">Participant Emoji</label>
+                        <input type="text" id="participant-emoji" placeholder="Set Emoji (Optional)" maxlength="2">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="absentees-emoji">Absentee Emoji</label>
+                        <input type="text" id="absentees-emoji" placeholder="Set Emoji (Optional)" maxlength="2">
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="audio-absentees">Absentees Names</label>
+                    <input type="text" id="audio-absentees" placeholder="Comma-separated names">
+                    
+                    <div class="dropdown-container">
+                        <label for="audio-absentee-dropdown">Add Absentee</label>
+                        <select id="audio-absentee-dropdown" onchange="addName('audio-absentee-dropdown', 'audio-absentees')">
+                            <option value="">-- Select Absentee --</option>
+                            <option value="Collins Roy">Collins Roy</option>
+                            <option value="Samual Raju">Samual Raju</option>
+                            <option value="Hibah Mohammed K">Hibah Mohammed K</option>
+                            <option value="Muhammed Suhail TS">Muhammed Suhail TS</option>
+                            <option value="Sidharth J">Sidharth J</option>
+                            <option value="Emin Siyad Mothi">Emin Siyad Mothi</option>
+                            <option value="Ajnas Ahammed V S">Ajnas Ahammed V S</option>
+                            <option value="Sidharth RS">Sidharth RS</option>
+                            <option value="Aswanth K T">Aswanth K T</option>
+                            <option value="Jeevan Vishnu">Jeevan Vishnu</option>
+                            <option value="Mubeena Parvin">Mubeena Parvin</option>
+                            <option value="Fidha Fathima M">Fidha Fathima M</option>
+                            <option value="Alan Jude Thomas">Alan Jude Thomas</option>
+                            <option value="Jissmon P Joseph">Jissmon P Joseph</option>
+                            <option value="Shafeeh">Shafeeh</option>
+                            <option value="Aswin MS">Aswin MS</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="audio-report">Reported By</label>
+                    <input type="text" id="audio-report" placeholder="Enter reporter name">
+                </div>
             </div>
-
-            <div class="form-group">
-                <label for="session-date">Date</label>
-                <input type="date" id="session-date">
-            </div>
-
-            <div class="form-group">
-                <label for="session-trainer">Trainer Name</label>
-                <input type="text" id="session-trainer" placeholder="Enter trainer name">
-            </div>
-
-            <div class="form-group">
-                <label for="session-coordinator">Co-Ordinator Name</label>
-                <input type="text" id="session-coordinator" placeholder="Comma-separated names">
-            </div>
-
-            <div class="form-group">
-                <label for="session-link">Session Link</label>
-                <input type="text" id="session-link" placeholder="Enter session link">
-            </div>
-
-            <div class="form-group">
-                <label for="session-tldv">TLdv Link</label>
-                <input type="text" id="session-tldv" placeholder="Enter TLdv link">
-            </div>
-
-            <div class="form-group">
-                <label for="session-topicname">Topic Name</label>
-                <input type="text" id="session-topicname" placeholder="Enter session topic name">
-            </div>
-
-            <div class="form-group">
-                <label for="session-topic">Topic</label>
-                <input type="text" id="session-topic" placeholder="Enter session topic">
-            </div>
-
-            <div class="form-group">
-                <label for="session-participant">Participant Names</label>
-                <input type="text" id="session-participant" placeholder="Comma-separated names">
-            </div>
-
-            <div class="form-group">
-                <label for="session-absentees">Absentees Names</label>
-                <input type="text" id="session-absentees" placeholder="Comma-separated names">
-            </div>
-
-            <div class="form-group">
-                <label for="session-report-by">Reported By</label>
-                <input type="text" id="session-report-by" placeholder="Enter reporter name">
+            
+            <!-- Session Report Form -->
+            <div class="tab-content" id="session-report">
+                <h2>Session Report</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="session-batch">Batch Name</label>
+                        <input type="text" id="session-batch" placeholder="Enter batch name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="session-date">Date</label>
+                        <input type="date" id="session-date">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="session-trainer">Trainer Name</label>
+                        <input type="text" id="session-trainer" placeholder="Enter trainer name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="session-coordinator">Co-Ordinator Name</label>
+                        <input type="text" id="session-coordinator" placeholder="Comma-separated names">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="session-link">Session Link</label>
+                        <input type="text" id="session-link" placeholder="Enter session link">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="session-tldv">TLdv Link</label>
+                        <input type="text" id="session-tldv" placeholder="Enter TLdv link">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="session-topicname">Topic Name</label>
+                        <input type="text" id="session-topicname" placeholder="Enter session topic name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="session-topic">Topic</label>
+                        <input type="text" id="session-topic" placeholder="Enter session topic">
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="session-participant">Participant Names</label>
+                    <input type="text" id="session-participant" placeholder="Comma-separated names">
+                    
+                    <div class="dropdown-container">
+                        <label for="participant-dropdown">Add Participant</label>
+                        <select id="participant-dropdown" onchange="addName('participant-dropdown', 'session-participant')">
+                            <option value="">-- Select Participant --</option>
+                            <option value="Collins Roy">Collins Roy</option>
+                            <option value="Samual Raju">Samual Raju</option>
+                            <option value="Hibah Mohammed K">Hibah Mohammed K</option>
+                            <option value="Muhammed Suhail TS">Muhammed Suhail TS</option>
+                            <option value="Sidharth J">Sidharth J</option>
+                            <option value="Emin Siyad Mothi">Emin Siyad Mothi</option>
+                            <option value="Ajnas Ahammed V S">Ajnas Ahammed V S</option>
+                            <option value="Sidharth RS">Sidharth RS</option>
+                            <option value="Aswanth K T">Aswanth K T</option>
+                            <option value="Jeevan Vishnu">Jeevan Vishnu</option>
+                            <option value="Mubeena Parvin">Mubeena Parvin</option>
+                            <option value="Fidha Fathima M">Fidha Fathima M</option>
+                            <option value="Alan Jude Thomas">Alan Jude Thomas</option>
+                            <option value="Jissmon P Joseph">Jissmon P Joseph</option>
+                            <option value="Shafeeh">Shafeeh</option>
+                            <option value="Aswin MS">Aswin MS</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="session-absentees">Absentees Names</label>
+                    <input type="text" id="session-absentees" placeholder="Comma-separated names">
+                    
+                    <div class="dropdown-container">
+                        <label for="absentee-dropdown">Add Absentee</label>
+                        <select id="absentee-dropdown" onchange="addName('absentee-dropdown', 'session-absentees')">
+                            <option value="">-- Select Absentee --</option>
+                            <option value="Collins Roy">Collins Roy</option>
+                            <option value="Samual Raju">Samual Raju</option>
+                            <option value="Hibah Mohammed K">Hibah Mohammed K</option>
+                            <option value="Muhammed Suhail TS">Muhammed Suhail TS</option>
+                            <option value="Sidharth J">Sidharth J</option>
+                            <option value="Emin Siyad Mothi">Emin Siyad Mothi</option>
+                            <option value="Ajnas Ahammed V S">Ajnas Ahammed V S</option>
+                            <option value="Sidharth RS">Sidharth RS</option>
+                            <option value="Aswanth K T">Aswanth K T</option>
+                            <option value="Jeevan Vishnu">Jeevan Vishnu</option>
+                            <option value="Mubeena Parvin">Mubeena Parvin</option>
+                            <option value="Fidha Fathima M">Fidha Fathima M</option>
+                            <option value="Alan Jude Thomas">Alan Jude Thomas</option>
+                            <option value="Jissmon P Joseph">Jissmon P Joseph</option>
+                            <option value="Shafeeh">Shafeeh</option>
+                            <option value="Aswin MS">Aswin MS</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="session-report-by">Reported By</label>
+                    <input type="text" id="session-report-by" placeholder="Enter reporter name">
+                </div>
             </div>
         </div>
-
-        <!-- Single Output Section -->
+        
+        <!-- Output Section -->
         <div class="output-section">
             <div class="buttons">
-                <button id="generate-btn" onclick="generateReport()">Generate Report</button>
-                <button id="copy-btn" onclick="copyToClipboard()">📋 Copy</button>
-                <button id="share-btn" onclick="shareReport()">📤 Share</button>
+                <button id="generate-btn">Generate Report</button>
+                <button id="copy-btn">📋 Copy</button>
+                <button id="share-btn">📤 Share</button>
             </div>
             
-            <textarea id="generate" rows="10" readonly></textarea>
+            <textarea id="generate" rows="10" readonly placeholder="Generated report will appear here..."></textarea>
         </div>
-      
+        
         <footer>
             <p>&copy; Created by Jeevan Vishnu</p>
         </footer>
     </div>
     
-    <script src="script.js"></script>
+    <script src="./script.js"></script>
 </body>
 </html>

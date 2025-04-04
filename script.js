@@ -1,11 +1,42 @@
-// Set initial display state when the page loads
+// Initialize the application when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById("audio-task").style.display = "grid";
-    document.getElementById("session-report").style.display = "none";
-    document.getElementById("toggle-btn").textContent = "📝 Switch to Session Report";
+    // Set initial active tab
+    document.getElementById("audio-task").classList.add("active");
+    document.getElementById("session-report").classList.remove("active");
+    
+    // Set up tab navigation
+    document.querySelectorAll('.tab-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.getAttribute('data-tab');
+            
+            // Update active state for tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update active state for buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+        });
+    });
+    
+    // Add event listeners for action buttons
+    document.getElementById('generate-btn').addEventListener('click', generateReport);
+    document.getElementById('copy-btn').addEventListener('click', copyToClipboard);
+    document.getElementById('share-btn').addEventListener('click', shareReport);
+    
+    // Initialize image upload preview
+    const sessionImage = document.getElementById('session-image');
+    if (sessionImage) {
+        sessionImage.addEventListener('change', handleImageUpload);
+    }
 });
 
-document.getElementById('session-image').addEventListener('change', function(event) {
+// Handle image upload and preview
+function handleImageUpload(event) {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
@@ -14,39 +45,26 @@ document.getElementById('session-image').addEventListener('change', function(eve
         
         // Clear any existing preview
         const container = document.getElementById('image-preview-container');
-        container.innerHTML = '';
-        container.appendChild(preview);
-        
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-            preview.style.display = 'block';
+        if (container) {
+            container.innerHTML = '';
+            container.appendChild(preview);
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                // Store image data for sharing
+                window.reportImageData = e.target.result;
+            };
+            
+            reader.readAsDataURL(file);
         }
-        
-        reader.readAsDataURL(file);
-    }
-});
-
-function toggleSection() {
-    const audioTask = document.getElementById("audio-task");
-    const sessionReport = document.getElementById("session-report");
-    const toggleBtn = document.getElementById("toggle-btn");
-
-    if (audioTask.style.display === "none") {
-      
-        audioTask.style.display = "grid";
-        sessionReport.style.display = "none";
-        toggleBtn.textContent = "📝 Switch to Session Report";
-    } else {
-       
-        audioTask.style.display = "none";
-        sessionReport.style.display = "grid";
-        toggleBtn.textContent = "🎤 Switch to Audio Task";
     }
 }
 
+// Generate report based on active tab
 function generateReport() {
-    // Check which section is currently visible
-    const isAudioTask = document.getElementById("audio-task").style.display !== "none";
+    // Check which tab is currently active
+    const isAudioTask = document.getElementById("audio-task").classList.contains("active");
     let reportText = "";
 
     if (isAudioTask) {
@@ -56,8 +74,8 @@ function generateReport() {
         const trainer = document.getElementById('audio-trainer').value;
         const coordinator = document.getElementById('audio-coordinator').value.split(',').map((c) => c.trim());
         const topic = document.getElementById('audio-topic').value;
-        const participant = document.getElementById('audio-participant').value.split(',').map(p => p.trim());
-        const absentees = document.getElementById('audio-absentees').value.split(',').map((c) => c.trim());
+        const participant = document.getElementById('audio-participant').value.split(',').map(p => p.trim()).filter(p => p !== "");
+        const absentees = document.getElementById('audio-absentees').value.split(',').map((c) => c.trim()).filter(c => c !== "");
         const report = document.getElementById('audio-report').value;
         const participantEmoji = document.getElementById('participant-emoji').value.trim() || '👤';
         const absenteeEmoji = document.getElementById('absentees-emoji').value.trim() || '❌';
@@ -72,9 +90,6 @@ Date: ${date}
 🧑🏻‍💻 Coordinators:
 ${coordinator.map((c, i) => `${i + 1}. ${c}`).join("\n")}
 
-------------------
-
-📝 Report:
 🎤... Audio Task Report ...🎤
 
 🔥 Topic: ${topic} 🔥
@@ -96,28 +111,21 @@ ${absentees.map((a) => `${absenteeEmoji} ${a}`).join("\n\n")}
         const batch = document.getElementById('session-batch').value;
         const date = document.getElementById('session-date').value;
         const trainer = document.getElementById('session-trainer').value;
-        const coordinator = document.getElementById('session-coordinator').value.split(',').map((c) => c.trim());
+        const coordinator = document.getElementById('session-coordinator').value.split(',').map((c) => c.trim()).filter(c => c !== "");
         const session = document.getElementById('session-link').value;
         const tldv = document.getElementById('session-tldv').value;
         const topicname = document.getElementById('session-topicname').value;
         const topic = document.getElementById('session-topic').value;
-        const participant = document.getElementById('session-participant').value.split(',').map(p => p.trim());
-        const absentees = document.getElementById('session-absentees').value.split(',').map((c) => c.trim());
+        const participant = document.getElementById('session-participant').value.split(',').map(p => p.trim()).filter(p => p !== "");
+        const absentees = document.getElementById('session-absentees').value.split(',').map((c) => c.trim()).filter(c => c !== "");
         const report = document.getElementById('session-report-by').value;
 
+        // Check if an image was uploaded
         const imagePreview = document.getElementById('image-preview');
-        let imageHtml = '';
-        
-        // Check if an image was uploaded and previewed
         if (imagePreview && imagePreview.style.display !== 'none') {
             // Add image note to the report text
             reportText += '\n\n[Image attached in the original report]\n';
-            
-            // For sharing purposes, we can also save the image data
-            window.reportImageData = imagePreview.src;
         }
-        
-        document.getElementById('generate').value = reportText;
 
         reportText = ` Communication Session Report
 
@@ -131,18 +139,17 @@ ${coordinator.map((c, i) => `${i + 1}. ${c}`).join("\n")}
 
 📌 Session Link: ${session}
 
-TLdv link: ${tldv}
+🔗 TLdv link: ${tldv}
 
 ---
-
 📝 Report:
+
 🎤 Today's Activity – ${topicname} 🎤
 
 🔥 Topic: ${topic} 🔥
 
 ------------------------
-
-📜 Participants (${'\n',participant.length})
+📜 Participants (${participant.length})
 ${participant.map((p, i) => `${i + 1}. ${p}`).join("\n")}
 ------------------------
 🚫 Absentees (${absentees.length}):
@@ -154,6 +161,7 @@ ${absentees.map((a, i) => `${i + 1}. ${a}`).join("\n")}
     document.getElementById('generate').value = reportText;
 }
 
+// Copy the generated report to clipboard
 function copyToClipboard() {
     const reportText = document.getElementById('generate');
     
@@ -162,13 +170,7 @@ function copyToClipboard() {
     
     navigator.clipboard.writeText(reportText.value)
         .then(() => {
-            const copyBtn = document.getElementById('copy-btn');
-            const originalText = copyBtn.innerHTML;
-            copyBtn.innerHTML = '✓ Copied!';
-            
-            setTimeout(() => {
-                copyBtn.innerHTML = originalText;
-            }, 2000);
+            updateButtonStatus('copy-btn', '✓ Copied!');
         })
         .catch(err => {
             console.error('Failed to copy: ', err);
@@ -176,99 +178,39 @@ function copyToClipboard() {
         });
 }
 
-function shareReport() {
-    const reportText = document.getElementById('generate').value;
-    
-    if (navigator.share) {
-        navigator.share({
-            title: 'Session Report',
-            text: reportText
-        })
-        .then(() => {
-            console.log('Report shared successfully');
-            
-            const shareBtn = document.getElementById('share-btn');
-            const originalText = shareBtn.innerHTML;
-            shareBtn.innerHTML = '✓ Shared!';
-            
-            setTimeout(() => {
-                shareBtn.innerHTML = originalText;
-            }, 2000);
-        })
-        .catch(error => {
-            console.error('Error sharing report:', error);
-            fallbackShare(reportText);
-        });
-    } else {
-        fallbackShare(reportText);
-    }
-}
-
-function fallbackShare(text) {
-    const input = document.createElement('textarea');
-    input.value = text;
-    document.body.appendChild(input);
-    input.select();
-    
-    try {
-        document.execCommand('copy');
-        alert('Report copied to clipboard. You can paste it to share.');
-        
-        const shareBtn = document.getElementById('share-btn');
-        const originalText = shareBtn.innerHTML;
-        shareBtn.innerHTML = '✓ Copied for sharing!';
-        
-        setTimeout(() => {
-            shareBtn.innerHTML = originalText;
-        }, 2000);
-    } catch (err) {
-        console.error('Failed to copy for sharing:', err);
-        alert('Unable to share. Please copy the report manually.');
-    }
-    
-    document.body.removeChild(input);
-}
-
-function dataURItoBlob(dataURI) {
-    const byteString = atob(dataURI.split(',')[1]);
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-    
-    return new Blob([ab], {type: mimeString});
-}
-
+// Share the report using Web Share API if available
 function shareReport() {
     const reportText = document.getElementById('generate').value;
     
     // Check if we can use the Web Share API with files
     if (navigator.share && navigator.canShare && window.reportImageData) {
-        // Try to share with image
-        const imageBlob = dataURItoBlob(window.reportImageData);
-        const file = new File([imageBlob], "report-image.jpg", {type: "image/jpeg"});
-        
-        const shareData = {
-            title: 'Session Report',
-            text: reportText,
-            files: [file]
-        };
-        
-        if (navigator.canShare(shareData)) {
-            navigator.share(shareData)
-                .then(() => {
-                    updateButtonStatus('share-btn', '✓ Shared!');
-                })
-                .catch(error => {
-                    console.error('Error sharing report with image:', error);
-                    // Fall back to text-only sharing
-                    shareTextOnly(reportText);
-                });
-        } else {
-            // Fall back to text-only sharing
+        try {
+            // Try to share with image
+            const imageBlob = dataURItoBlob(window.reportImageData);
+            const file = new File([imageBlob], "report-image.jpg", {type: "image/jpeg"});
+            
+            const shareData = {
+                title: 'Session Report',
+                text: reportText,
+                files: [file]
+            };
+            
+            if (navigator.canShare(shareData)) {
+                navigator.share(shareData)
+                    .then(() => {
+                        updateButtonStatus('share-btn', '✓ Shared!');
+                    })
+                    .catch(error => {
+                        console.error('Error sharing report with image:', error);
+                        // Fall back to text-only sharing
+                        shareTextOnly(reportText);
+                    });
+            } else {
+                // Fall back to text-only sharing
+                shareTextOnly(reportText);
+            }
+        } catch (error) {
+            console.error('Error preparing share:', error);
             shareTextOnly(reportText);
         }
     } else {
@@ -296,6 +238,25 @@ function shareTextOnly(text) {
     }
 }
 
+// Fallback method for sharing (copy to clipboard)
+function fallbackShare(text) {
+    const input = document.createElement('textarea');
+    input.value = text;
+    document.body.appendChild(input);
+    input.select();
+    
+    try {
+        document.execCommand('copy');
+        alert('Report copied to clipboard. You can paste it to share.');
+        updateButtonStatus('share-btn', '✓ Copied for sharing!');
+    } catch (err) {
+        console.error('Failed to copy for sharing:', err);
+        alert('Unable to share. Please copy the report manually.');
+    }
+    
+    document.body.removeChild(input);
+}
+
 // Helper function to update button status
 function updateButtonStatus(buttonId, message) {
     const button = document.getElementById(buttonId);
@@ -305,4 +266,58 @@ function updateButtonStatus(buttonId, message) {
     setTimeout(() => {
         button.innerHTML = originalText;
     }, 2000);
+}
+
+// Convert Data URI to Blob for file sharing
+function dataURItoBlob(dataURI) {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    
+    return new Blob([ab], {type: mimeString});
+}
+
+// Add name from dropdown to input field
+function addName(dropdownId, inputId) {
+    const dropdown = document.getElementById(dropdownId);
+    const input = document.getElementById(inputId);
+    const selectedName = dropdown.value;
+    
+    if (selectedName) {
+        if (input.value.trim() !== '') {
+            input.value += ', ' + selectedName;
+        } else {
+            input.value = selectedName;
+        }
+        
+        removeOptionFromAllDropdowns(selectedName);
+        dropdown.selectedIndex = 0;
+    }
+}
+
+// Remove selected option from all dropdowns
+function removeOptionFromAllDropdowns(name) {
+    const allDropdowns = [
+        'audio-participant-dropdown', 
+        'audio-absentee-dropdown',
+        'participant-dropdown', 
+        'absentee-dropdown'
+    ];
+    
+    allDropdowns.forEach(dropdownId => {
+        const dropdown = document.getElementById(dropdownId);
+        if (dropdown) {
+            for (let i = 0; i < dropdown.options.length; i++) {
+                if (dropdown.options[i].value === name) {
+                    dropdown.remove(i);
+                    break;
+                }
+            }
+        }
+    });
 }
