@@ -77,10 +77,12 @@ function generateReport() {
         const participant = document.getElementById('audio-participant').value.split(',').map(p => p.trim()).filter(p => p !== "");
         const absentees = document.getElementById('audio-absentees').value.split(',').map((c) => c.trim()).filter(c => c !== "");
         const report = document.getElementById('audio-report').value;
-        const participantEmoji = document.getElementById('participant-emoji').value.trim() || '👤';
+        const participantEmoji = document.getElementById('participant-emoji').value.trim() || '✅';
         const absenteeEmoji = document.getElementById('absentees-emoji').value.trim() || '❌';
 
         reportText = ` 
+Audio Task Submission Report
+======================
 
 Batch: ${batch}
 Date: ${date}
@@ -90,18 +92,16 @@ Date: ${date}
 🧑🏻‍💻 Coordinators:
 ${coordinator.map((c, i) => `${i + 1}. ${c}`).join("\n")}
 
-🎤... Audio Task Report ...🎤
-
-🔥 Topic: ${topic} 🔥
+ Topic: ${topic} 
 
 ------------------------
 
 📜 Participants (${participant.length}):\n
-${participant.map((p) => `${participantEmoji} ${p}`).join("\n\n")}\n
+${participant.map((p) => `${participantEmoji} ${p}`).join("\n")}
 ------------------------
 
 🚫 Absentees (${absentees.length}):\n
-${absentees.map((a) => `${absenteeEmoji} ${a}`).join("\n\n")}
+${absentees.map((a) => `${absenteeEmoji} ${a}`).join("\n")}
 
 
 ✍ Reported by: ${report}`;
@@ -146,13 +146,16 @@ ${coordinator.map((c, i) => `${i + 1}. ${c}`).join("\n")}
 
 🎤 Today's Activity – ${topicname} 🎤
 
-🔥 Topic: ${topic} 🔥
+  Topic: ${topic} 
 
 ------------------------
 📜 Participants (${participant.length})
+
 ${participant.map((p, i) => `${i + 1}. ${p}`).join("\n")}
+
 ------------------------
 🚫 Absentees (${absentees.length}):
+
 ${absentees.map((a, i) => `${i + 1}. ${a}`).join("\n")}
 
 ✍ Reported by: ${report}`;
