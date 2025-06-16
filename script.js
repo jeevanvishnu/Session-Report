@@ -96,11 +96,11 @@ ${coordinator.map((c, i) => `${i + 1}. ${c}`).join("\n")}
 
 ------------------------
 
-📜 Participants (${participant.length}):\n
+🔊 Audio Submitted: (${participant.length}):\n
 ${participant.map((p) => `${participantEmoji} ${p}`).join("\n")}
 ------------------------
 
-🚫 Absentees (${absentees.length}):\n
+🔇 Not Submitted (${absentees.length}):\n
 ${absentees.map((a) => `${absenteeEmoji} ${a}`).join("\n")}
 
 
