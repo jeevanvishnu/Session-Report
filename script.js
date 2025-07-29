@@ -119,7 +119,7 @@ ${absentees.map((a) => `${absenteeEmoji} ${a}`).join("\n")}
         const participant = document.getElementById('session-participant').value.split(',').map(p => p.trim()).filter(p => p !== "");
         const absentees = document.getElementById('session-absentees').value.split(',').map((c) => c.trim()).filter(c => c !== "");
         const report = document.getElementById('session-report-by').value;
-
+        const meetList = document.getElementById('session-meet').value
         // Check if an image was uploaded
         const imagePreview = document.getElementById('image-preview');
         if (imagePreview && imagePreview.style.display !== 'none') {
@@ -140,6 +140,8 @@ ${coordinator.map((c, i) => `${i + 1}. ${c}`).join("\n")}
 📌 Session Link: ${session}
 
 🔗 TLdv link: ${tldv}
+
+🔗 Meet list :${meetList}
 
 ---
 📝 Report:
