@@ -1,88 +1,59 @@
-// Initialize the application when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Set initial active tab
-    document.getElementById("audio-task").classList.add("active");
-    document.getElementById("session-report").classList.remove("active");
-    
-    // Set up tab navigation
-    document.querySelectorAll('.tab-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const tabId = button.getAttribute('data-tab');
-            
-            // Update active state for tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.getElementById(tabId).classList.add('active');
-            
-            // Update active state for buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            button.classList.add('active');
+    // Initialize the application when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners for action buttons
+            document.getElementById('generate-btn').addEventListener('click', generateReport);
+            document.getElementById('copy-btn').addEventListener('click', copyToClipboard);
+            document.getElementById('share-btn').addEventListener('click', shareReport);
+
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('session-date').value = today;
+
+            // Setup input listeners for dynamic dropdown updates
+            setupInputListeners();
         });
-    });
-    
-    // Add event listeners for action buttons
-    document.getElementById('generate-btn').addEventListener('click', generateReport);
-    document.getElementById('copy-btn').addEventListener('click', copyToClipboard);
-    document.getElementById('share-btn').addEventListener('click', shareReport);
-    
-    // Initialize image upload preview
-    const sessionImage = document.getElementById('session-image');
-    if (sessionImage) {
-        sessionImage.addEventListener('change', handleImageUpload);
-    }
-});
 
-// Handle image upload and preview
-function handleImageUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        const preview = document.createElement('img');
-        preview.id = 'image-preview';
-        
-        // Clear any existing preview
-        const container = document.getElementById('image-preview-container');
-        if (container) {
-            container.innerHTML = '';
-            container.appendChild(preview);
-            
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-                // Store image data for sharing
-                window.reportImageData = e.target.result;
-            };
-            
-            reader.readAsDataURL(file);
+        // Handle image upload and preview
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                const preview = document.getElementById('image-preview');
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    // Store image data for sharing
+                    window.reportImageData = e.target.result;
+                };
+                
+                reader.readAsDataURL(file);
+            }
         }
-    }
-}
 
-// Generate report based on active tab
-function generateReport() {
-    // Check which tab is currently active
-    const isAudioTask = document.getElementById("audio-task").classList.contains("active");
-    let reportText = "";
+        // Generate session report
+        function generateReport() {
+            // Add loading effect
+            const generateBtn = document.getElementById('generate-btn');
+            const originalText = generateBtn.innerHTML;
+            generateBtn.innerHTML = '⚡ Generating...';
+            generateBtn.classList.add('loading');
 
-    if (isAudioTask) {
-        // Generate Audio Task Report
-        const batch = document.getElementById('audio-batch').value;
-        const date = document.getElementById('audio-date').value;
-        const trainer = document.getElementById('audio-trainer').value;
-        const coordinator = document.getElementById('audio-coordinator').value.split(',').map((c) => c.trim());
-        const topic = document.getElementById('audio-topic').value;
-        const participant = document.getElementById('audio-participant').value.split(',').map(p => p.trim()).filter(p => p !== "");
-        const absentees = document.getElementById('audio-absentees').value.split(',').map((c) => c.trim()).filter(c => c !== "");
-        const report = document.getElementById('audio-report').value;
-        const participantEmoji = document.getElementById('participant-emoji').value.trim() || '✅';
-        const absenteeEmoji = document.getElementById('absentees-emoji').value.trim() || '❌';
+            setTimeout(() => {
+                // Generate Session Report
+                const batch = document.getElementById('session-batch').value;
+                const date = document.getElementById('session-date').value;
+                const trainer = document.getElementById('session-trainer').value;
+                const coordinator = document.getElementById('session-coordinator').value.split(',').map((c) => c.trim()).filter(c => c !== "");
+                const session = document.getElementById('session-link').value;
+                const tldv = document.getElementById('session-tldv').value;
+                const topicname = document.getElementById('session-topicname').value;
+                const topic = document.getElementById('session-topic').value;
+                const participant = document.getElementById('session-participant').value.split(',').map(p => p.trim()).filter(p => p !== "");
+                const absentees = document.getElementById('session-absentees').value.split(',').map((c) => c.trim()).filter(c => c !== "");
+                const report = document.getElementById('session-report-by').value;
 
-        reportText = ` 
-Audio Task Submission Report
-======================
+                const reportText = `Communication Session Report
 
 Batch: ${batch}
 Date: ${date}
@@ -90,239 +61,248 @@ Date: ${date}
 👩🏻‍💼 Trainer: ${trainer}
 
 🧑🏻‍💻 Coordinators:
-${coordinator.map((c, i) => `${i + 1}. ${c}`).join("\n")}
-
- Topic: ${topic} 
-
-------------------------
-
-🔊 Audio Submitted: (${participant.length}):\n
-${participant.map((p) => `${participantEmoji} ${p}`).join("\n")}
-------------------------
-
-🔇 Not Submitted (${absentees.length}):\n
-${absentees.map((a) => `${absenteeEmoji} ${a}`).join("\n")}
-
-
-✍ Reported by: ${report}`;
-
-    } else {
-        // Generate Session Report
-        const batch = document.getElementById('session-batch').value;
-        const date = document.getElementById('session-date').value;
-        const trainer = document.getElementById('session-trainer').value;
-        const coordinator = document.getElementById('session-coordinator').value.split(',').map((c) => c.trim()).filter(c => c !== "");
-        const session = document.getElementById('session-link').value;
-        const tldv = document.getElementById('session-tldv').value;
-        const topicname = document.getElementById('session-topicname').value;
-        const topic = document.getElementById('session-topic').value;
-        const participant = document.getElementById('session-participant').value.split(',').map(p => p.trim()).filter(p => p !== "");
-        const absentees = document.getElementById('session-absentees').value.split(',').map((c) => c.trim()).filter(c => c !== "");
-        const report = document.getElementById('session-report-by').value;
-        const meetList = document.getElementById('session-meet').value
-        // Check if an image was uploaded
-        const imagePreview = document.getElementById('image-preview');
-        if (imagePreview && imagePreview.style.display !== 'none') {
-            // Add image note to the report text
-            reportText += '\n\n[Image attached in the original report]\n';
-        }
-
-        reportText = ` Communication Session Report
-
-Batch: ${batch}
-Date: ${date}
-
-👩🏻‍💼 Trainer: ${trainer}
-
-🧑🏻‍💻 Coordinators:
-${coordinator.map((c, i) => `${i + 1}. ${c}`).join("\n")}
+${coordinator.length > 0 ? coordinator.map((c, i) => `${i + 1}. ${c}`).join("\n") : 'No coordinators listed'}
 
 📌 Session Link: ${session}
 
 🔗 TLdv link: ${tldv}
-
-🔗 Meet list :${meetList}
 
 ---
 📝 Report:
 
 🎤 Today's Activity – ${topicname} 🎤
 
-  Topic: ${topic} 
+📝 Topic: ${topic} 
 
 ------------------------
 📜 Participants (${participant.length})
 
-${participant.map((p, i) => `${i + 1}. ${p}`).join("\n")}
+${participant.length > 0 ? participant.map((p, i) => `${i + 1}. ${p}`).join("\n") : 'No participants listed'}
 
 ------------------------
 🚫 Absentees (${absentees.length}):
 
-${absentees.map((a, i) => `${i + 1}. ${a}`).join("\n")}
+${absentees.length > 0 ? absentees.map((a, i) => `${i + 1}. ${a}`).join("\n") : 'No absentees'}
 
 ✍ Reported by: ${report}`;
-    }
 
-    document.getElementById('generate').value = reportText;
-}
+                document.getElementById('generate').value = reportText;
+                
+                // Remove loading effect and add success animation
+                generateBtn.innerHTML = originalText;
+                generateBtn.classList.remove('loading');
+                document.getElementById('generate').classList.add('success-flash');
+                
+                setTimeout(() => {
+                    document.getElementById('generate').classList.remove('success-flash');
+                }, 500);
+            }, 1000);
+        }
 
-// Copy the generated report to clipboard
-function copyToClipboard() {
-    const reportText = document.getElementById('generate');
-    
-    reportText.select();
-    reportText.setSelectionRange(0, 99999); 
-    
-    navigator.clipboard.writeText(reportText.value)
-        .then(() => {
-            updateButtonStatus('copy-btn', '✓ Copied!');
-        })
-        .catch(err => {
-            console.error('Failed to copy: ', err);
-            alert('Failed to copy text. Please try again.');
-        });
-}
-
-// Share the report using Web Share API if available
-function shareReport() {
-    const reportText = document.getElementById('generate').value;
-    
-    // Check if we can use the Web Share API with files
-    if (navigator.share && navigator.canShare && window.reportImageData) {
-        try {
-            // Try to share with image
-            const imageBlob = dataURItoBlob(window.reportImageData);
-            const file = new File([imageBlob], "report-image.jpg", {type: "image/jpeg"});
+        // Copy the generated report to clipboard
+        function copyToClipboard() {
+            const reportText = document.getElementById('generate');
             
-            const shareData = {
-                title: 'Session Report',
-                text: reportText,
-                files: [file]
-            };
+            reportText.select();
+            reportText.setSelectionRange(0, 99999); 
             
-            if (navigator.canShare(shareData)) {
-                navigator.share(shareData)
-                    .then(() => {
-                        updateButtonStatus('share-btn', '✓ Shared!');
-                    })
-                    .catch(error => {
-                        console.error('Error sharing report with image:', error);
-                        // Fall back to text-only sharing
-                        shareTextOnly(reportText);
-                    });
+            navigator.clipboard.writeText(reportText.value)
+                .then(() => {
+                    updateButtonStatus('copy-btn', '✅ Copied!', '#10b981');
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    // Fallback for older browsers
+                    try {
+                        document.execCommand('copy');
+                        updateButtonStatus('copy-btn', '✅ Copied!', '#10b981');
+                    } catch (fallbackErr) {
+                        updateButtonStatus('copy-btn', '❌ Failed', '#ef4444');
+                    }
+                });
+        }
+
+        // Share the report using Web Share API if available
+        function shareReport() {
+            const reportText = document.getElementById('generate').value;
+            
+            if (!reportText.trim()) {
+                alert('Please generate a report first!');
+                return;
+            }
+            
+            // Use Web Share API if available
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Session Report',
+                    text: reportText
+                })
+                .then(() => {
+                    updateButtonStatus('share-btn', '✅ Shared!', '#10b981');
+                })
+                .catch(error => {
+                    console.error('Error sharing report:', error);
+                    fallbackShare(reportText);
+                });
             } else {
-                // Fall back to text-only sharing
-                shareTextOnly(reportText);
+                // Fall back to copying to clipboard
+                fallbackShare(reportText);
             }
-        } catch (error) {
-            console.error('Error preparing share:', error);
-            shareTextOnly(reportText);
         }
-    } else {
-        // Fall back to text-only sharing
-        shareTextOnly(reportText);
-    }
-}
 
-// Helper function for sharing text only
-function shareTextOnly(text) {
-    if (navigator.share) {
-        navigator.share({
-            title: 'Session Report',
-            text: text
-        })
-        .then(() => {
-            updateButtonStatus('share-btn', '✓ Shared!');
-        })
-        .catch(error => {
-            console.error('Error sharing report:', error);
-            fallbackShare(text);
-        });
-    } else {
-        fallbackShare(text);
-    }
-}
-
-// Fallback method for sharing (copy to clipboard)
-function fallbackShare(text) {
-    const input = document.createElement('textarea');
-    input.value = text;
-    document.body.appendChild(input);
-    input.select();
-    
-    try {
-        document.execCommand('copy');
-        alert('Report copied to clipboard. You can paste it to share.');
-        updateButtonStatus('share-btn', '✓ Copied for sharing!');
-    } catch (err) {
-        console.error('Failed to copy for sharing:', err);
-        alert('Unable to share. Please copy the report manually.');
-    }
-    
-    document.body.removeChild(input);
-}
-
-// Helper function to update button status
-function updateButtonStatus(buttonId, message) {
-    const button = document.getElementById(buttonId);
-    const originalText = button.innerHTML;
-    button.innerHTML = message;
-    
-    setTimeout(() => {
-        button.innerHTML = originalText;
-    }, 2000);
-}
-
-// Convert Data URI to Blob for file sharing
-function dataURItoBlob(dataURI) {
-    const byteString = atob(dataURI.split(',')[1]);
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-    
-    return new Blob([ab], {type: mimeString});
-}
-
-// Add name from dropdown to input field
-function addName(dropdownId, inputId) {
-    const dropdown = document.getElementById(dropdownId);
-    const input = document.getElementById(inputId);
-    const selectedName = dropdown.value;
-    
-    if (selectedName) {
-        if (input.value.trim() !== '') {
-            input.value += ', ' + selectedName;
-        } else {
-            input.value = selectedName;
+        // Fallback method for sharing (copy to clipboard)
+        function fallbackShare(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    updateButtonStatus('share-btn', '📋 Copied for sharing!', '#8b5cf6');
+                })
+                .catch(err => {
+                    console.error('Failed to copy for sharing:', err);
+                    updateButtonStatus('share-btn', '❌ Share failed', '#ef4444');
+                });
         }
-        
-        removeOptionFromAllDropdowns(selectedName);
-        dropdown.selectedIndex = 0;
-    }
-}
 
-// Remove selected option from all dropdowns
-function removeOptionFromAllDropdowns(name) {
-    const allDropdowns = [
-        'audio-participant-dropdown', 
-        'audio-absentee-dropdown',
-        'participant-dropdown', 
-        'absentee-dropdown'
-    ];
-    
-    allDropdowns.forEach(dropdownId => {
-        const dropdown = document.getElementById(dropdownId);
-        if (dropdown) {
-            for (let i = 0; i < dropdown.options.length; i++) {
-                if (dropdown.options[i].value === name) {
-                    dropdown.remove(i);
-                    break;
+        // Helper function to update button status
+        function updateButtonStatus(buttonId, message, color) {
+            const button = document.getElementById(buttonId);
+            const originalText = button.innerHTML;
+            const originalBackground = button.style.background;
+            
+            button.innerHTML = message;
+            if (color) {
+                button.style.background = color;
+            }
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = originalBackground;
+            }, 2000);
+        }
+
+        // Convert Data URI to Blob for file sharing
+        function dataURItoBlob(dataURI) {
+            const byteString = atob(dataURI.split(',')[1]);
+            const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            
+            return new Blob([ab], {type: mimeString});
+        }
+
+        // Store all available names
+        const allNames = [
+            "Collins Roy", "Samual Raju", "Hibah Mohammed K", "Muhammed Suhail TS",
+            "Sidharth J", "Emin Siyad Mothi", "Ajnas Ahammed V S", "Sidharth RS",
+            "Aswanth K T", "Jeevan Vishnu", "Mubeena Parvin", "Fidha Fathima M",
+            "Deneesh K", "Jissmon P Joseph", "Shafeeh", "Aswin MS",
+            "Ancy Faizal", "Muhammed Shan", "Abin C S", "Ashmil"
+        ];
+
+        // Add name from dropdown to input field
+        function addName(dropdownId, inputId) {
+            const dropdown = document.getElementById(dropdownId);
+            const input = document.getElementById(inputId);
+            const selectedName = dropdown.value;
+            
+            if (selectedName) {
+                if (input.value.trim() !== '') {
+                    input.value += ', ' + selectedName;
+                } else {
+                    input.value = selectedName;
                 }
+                
+                removeOptionFromAllDropdowns(selectedName);
+                dropdown.selectedIndex = 0;
+                
+                // Add visual feedback
+                input.style.borderColor = '#10b981';
+                setTimeout(() => {
+                    input.style.borderColor = '#374151';
+                }, 1000);
             }
         }
-    });
-}
+
+        // Remove selected option from all dropdowns
+        function removeOptionFromAllDropdowns(name) {
+            const allDropdowns = ['participant-dropdown', 'absentee-dropdown'];
+            
+            allDropdowns.forEach(dropdownId => {
+                const dropdown = document.getElementById(dropdownId);
+                if (dropdown) {
+                    for (let i = 0; i < dropdown.options.length; i++) {
+                        if (dropdown.options[i].value === name) {
+                            dropdown.remove(i);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Get all currently used names from both input fields
+        function getCurrentlyUsedNames() {
+            const participantNames = document.getElementById('session-participant').value
+                .split(',').map(name => name.trim()).filter(name => name !== '');
+            const absenteeNames = document.getElementById('session-absentees').value
+                .split(',').map(name => name.trim()).filter(name => name !== '');
+            
+            return [...participantNames, ...absenteeNames];
+        }
+
+        // Refresh dropdowns to show available names
+        function refreshDropdowns() {
+            const usedNames = getCurrentlyUsedNames();
+            const availableNames = allNames.filter(name => !usedNames.includes(name));
+            
+            const dropdowns = ['participant-dropdown', 'absentee-dropdown'];
+            
+            dropdowns.forEach(dropdownId => {
+                const dropdown = document.getElementById(dropdownId);
+                const currentValue = dropdown.value;
+                
+                // Clear dropdown except first option
+                dropdown.innerHTML = '<option value="">-- Select ' + (dropdownId.includes('participant') ? 'Participant' : 'Absentee') + ' --</option>';
+                
+                // Add available names back
+                availableNames.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    dropdown.appendChild(option);
+                });
+                
+                // Restore previous selection if it's still available
+                if (availableNames.includes(currentValue)) {
+                    dropdown.value = currentValue;
+                }
+            });
+        }
+
+        // Add event listeners to input fields to detect changes
+        function setupInputListeners() {
+            const participantInput = document.getElementById('session-participant');
+            const absenteeInput = document.getElementById('session-absentees');
+            
+            [participantInput, absenteeInput].forEach(input => {
+                let previousValue = input.value;
+                
+                // Listen for any changes to the input
+                input.addEventListener('input', function() {
+                    // Small delay to allow for typing
+                    setTimeout(() => {
+                        if (input.value !== previousValue) {
+                            refreshDropdowns();
+                            previousValue = input.value;
+                        }
+                    }, 300);
+                });
+                
+                // Also listen for paste and cut events
+                input.addEventListener('paste', () => setTimeout(refreshDropdowns, 100));
+                input.addEventListener('cut', () => setTimeout(refreshDropdowns, 100));
+            });
+        }
